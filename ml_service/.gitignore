@@ -1,0 +1,76 @@
+# ------------------------
+# Python
+# ------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+dist/
+build/
+.venv/
+env/
+venv/
+
+# ------------------------
+# IDE / Editors
+# ------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------
+# Environment / Secrets
+# ------------------------
+.env
+*.env
+
+# ------------------------
+# Logs
+# ------------------------
+*.log
+logs/
+*.out
+
+# ------------------------
+# ML / Data Files
+# ------------------------
+ml_models/*.h5
+ml_models/*.pt
+ml_models/*.pkl
+ml_models/*.joblib
+ml_models/*.onnx
+ml_models/*.ckpt
+ml_models/__pycache__/
+data/
+datasets/
+checkpoints/
+outputs/
+runs/
+
+# ------------------------
+# Docker / Deployment
+# ------------------------
+*.pid
+*.seed
+*.bak
+*.tmp
+*.tar
+*.gz
+*.zip
+*.db
+*.sqlite
+docker-compose.override.yml
+
+# ------------------------
+# Jupyter
+# ------------------------
+*.ipynb_checkpoints
+
+# ------------------------
+# OS Specific
+# ------------------------
+.DS_Store
+Thumbs.db
