@@ -1,87 +1,86 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { styled } from 'nativewind';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../redux/slices/authSlice';
+import { register } from '../../api'; // Make sure this is correctly pointing to your api file
+import { saveToken } from '../../utils/storage';
 import InputField from '../../components/common/InputField';
 import Button from '../../components/common/Button';
-import { loginSuccess, authError, setLoading } from '../../redux/slices/authSlice';
-import { saveToken } from '../../utils/storage';
-import axiosInstance from '../../api/axiosConfig';
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledSafeAreaView = styled(SafeAreaView);
+const RegisterScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
-const RegisterScreen = () => {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const { isLoading, error } = useSelector((state) => state.auth);
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+      setError('All fields are required.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const response = await register({ name, email, password });
+      const { token } = response.data;
+      await saveToken(token);
+      dispatch(loginSuccess({ token }));
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleRegister = async () => {
-        dispatch(setLoading(true));
-        try {
-            const response = await axiosInstance.post('/users', { name, email, password });
-            const { token } = response.data;
-            await saveToken(token);
-            dispatch(loginSuccess({ token }));
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
-            dispatch(authError(errorMessage));
-        } finally {
-            dispatch(setLoading(false));
-        }
-    };
-
-    return (
-        <StyledSafeAreaView className="flex-1 bg-white">
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                className="flex-1 justify-center items-center p-6"
-            >
-                <StyledText className="text-4xl font-bold text-blue-500 mb-2">Create Account</StyledText>
-                <StyledText className="text-lg text-gray-500 mb-8">Start your journey with us</StyledText>
-
-                {error && <StyledText className="text-red-500 mb-4">{error}</StyledText>}
-
-                <InputField
-                    label="Full Name"
-                    icon="person-outline"
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Your full name"
-                />
-                <InputField
-                    label="Email"
-                    icon="mail-outline"
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="youremail@example.com"
-                />
-                <InputField
-                    label="Password"
-                    icon="lock-closed-outline"
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="Create a password"
-                    secureTextEntry
-                />
-                
-                <Button title="Sign Up" onPress={handleRegister} isLoading={isLoading} style={{ width: '100%', marginTop: 20 }}/>
-
-                <StyledView className="flex-row mt-6">
-                    <StyledText className="text-gray-500">Already have an account? </StyledText>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                        <StyledText className="text-blue-500 font-bold">Log In</StyledText>
-                    </TouchableOpacity>
-                </StyledView>
-            </KeyboardAvoidingView>
-        </StyledSafeAreaView>
-    );
+  return (
+    <SafeAreaView className="flex-1 bg-gray-100">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1 justify-center items-center p-6"
+      >
+        <View className="w-full max-w-sm">
+          <Text className="text-4xl font-extrabold text-gray-800 text-center mb-8">
+            Create Account
+          </Text>
+          <InputField
+            label="Name"
+            value={name}
+            onChangeText={setName}
+            placeholder="Your Name"
+          />
+          <InputField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholder="you@example.com"
+          />
+          <InputField
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="********"
+          />
+          {error ? <Text className="text-red-500 text-center mb-4">{error}</Text> : null}
+          <Button onPress={handleRegister} loading={loading} disabled={loading}>
+            Register
+          </Button>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Login')}
+            className="mt-4"
+          >
+            <Text className="text-center text-blue-600">
+              Already have an account? <Text className="font-bold">Login</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 };
 
 export default RegisterScreen;
