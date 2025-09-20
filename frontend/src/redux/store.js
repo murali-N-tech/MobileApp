@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-// Import other reducers here as they are created
+import { injectStore } from '../api/axiosConfig'; // Import the injector
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     auth: authReducer,
-    // user: userReducer,
-    // video: videoReducer,
-    // leaderboard: leaderboardReducer,
   },
 });
+
+injectStore(store); // Inject the store right after it's created
+
+export default store;

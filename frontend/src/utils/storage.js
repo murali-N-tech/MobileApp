@@ -1,30 +1,30 @@
 import * as SecureStore from 'expo-secure-store';
 
-const TOKEN_KEY = 'user_auth_token';
+const TOKEN_KEY = 'authToken';
 
+// Saves the auth token to secure storage
 export const saveToken = async (token) => {
   try {
     await SecureStore.setItemAsync(TOKEN_KEY, token);
-    console.log('Token saved successfully');
   } catch (error) {
-    console.error('Error saving the auth token', error);
+    console.log('Error saving the auth token', error);
   }
 };
 
+// Gets the auth token from secure storage
 export const getToken = async () => {
   try {
     return await SecureStore.getItemAsync(TOKEN_KEY);
   } catch (error) {
-    console.error('Error getting the auth token', error);
-    return null;
+    console.log('Error getting the auth token', error);
   }
 };
 
-export const deleteToken = async () => {
+// Removes the auth token from secure storage
+export const removeToken = async () => {
   try {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
-    console.log('Token deleted successfully');
   } catch (error) {
-    console.error('Error deleting the auth token', error);
+    console.log('Error removing the auth token', error);
   }
 };

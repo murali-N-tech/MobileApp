@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../../redux/slices/authSlice';
-import { login } from '../../api'; // Make sure this is correctly pointing to your api file
+import { login } from '../../api';
 import { saveToken } from '../../utils/storage';
 import InputField from '../../components/common/InputField';
 import Button from '../../components/common/Button';
@@ -34,15 +34,13 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1 justify-center items-center p-6"
+        style={styles.keyboardView}
       >
-        <View className="w-full max-w-sm">
-          <Text className="text-4xl font-extrabold text-gray-800 text-center mb-8">
-            Welcome Back!
-          </Text>
+        <View style={styles.innerContainer}>
+          <Text style={styles.title}>Welcome Back!</Text>
           <InputField
             label="Email"
             value={email}
@@ -58,16 +56,14 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry
             placeholder="********"
           />
-          {error ? <Text className="text-red-500 text-center mb-4">{error}</Text> : null}
-          <Button onPress={handleLogin} loading={loading} disabled={loading}>
-            Login
-          </Button>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <Button title="Login" onPress={handleLogin} disabled={loading} />
           <TouchableOpacity
             onPress={() => navigation.navigate('Register')}
-            className="mt-4"
+            style={styles.registerButton}
           >
-            <Text className="text-center text-blue-600">
-              Don't have an account? <Text className="font-bold">Register</Text>
+            <Text style={styles.registerText}>
+              Don't have an account? <Text style={styles.registerLink}>Register</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -75,5 +71,44 @@ const LoginScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F3F4F6',
+  },
+  keyboardView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  innerContainer: {
+    width: '100%',
+    maxWidth: 384,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  errorText: {
+    color: '#EF4444',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  registerButton: {
+    marginTop: 16,
+  },
+  registerText: {
+    textAlign: 'center',
+    color: '#2563EB',
+  },
+  registerLink: {
+    fontWeight: 'bold',
+  },
+});
 
 export default LoginScreen;

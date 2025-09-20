@@ -1,20 +1,19 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
 import store from './src/redux/store';
 import RootNavigator from './src/navigation/RootNavigator';
-import { StatusBar } from 'expo-status-bar';
-import './global.css'; // <-- Add this line
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native'; // 👈 Import this
 
-const App = () => {
+export default function App() {
   return (
     <Provider store={store}>
+      {/* 👇 Wrap your navigator with this container 👇 */}
       <NavigationContainer>
-        <RootNavigator />
-        <StatusBar style="auto" />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <RootNavigator />
+        </GestureHandlerRootView>
       </NavigationContainer>
     </Provider>
   );
-};
-
-export default App;
+}
