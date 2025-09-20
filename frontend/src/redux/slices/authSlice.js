@@ -1,38 +1,69 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { storeToken, removeToken } from '../../utils/storage';
 
 const initialState = {
-  userToken: null,
   isAuthenticated: false,
-  isLoading: false,
+  user: null,
+  token: null,
   error: null,
+  loading: false,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.isLoading = action.payload;
+    setLoading(state, action) {
+      state.loading = action.payload;
     },
-    loginSuccess: (state, action) => {
-      state.userToken = action.payload.token;
+    loginStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    loginSuccess(state, action) {
+      state.loading = false;
       state.isAuthenticated = true;
-      state.isLoading = false;
-      state.error = null;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      storeToken(action.payload.token);
     },
-    logoutSuccess: (state) => {
-      state.userToken = null;
-      state.isAuthenticated = false;
-      state.isLoading = false;
-      state.error = null;
-    },
-    authError: (state, action) => {
+    loginFailure(state, action) {
+      state.loading = false;
       state.error = action.payload;
-      state.isLoading = false;
+    },
+    registerStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    registerSuccess(state, action) {
+      state.loading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      storeToken(action.payload.token);
+    },
+    registerFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
+      removeToken();
     },
   },
 });
 
-export const { setLoading, loginSuccess, logoutSuccess, authError } = authSlice.actions;
+export const {
+  setLoading,
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  registerStart,
+  registerSuccess,
+  registerFailure,
+  logout,
+} = authSlice.actions;
 
 export default authSlice.reducer;

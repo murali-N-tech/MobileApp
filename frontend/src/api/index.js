@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from '../utils/storage';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5001/api', // e.g., 'http://localhost:5000/api' or your production URL
+  baseURL: 'http://192.168.0.174:5001/api', // e.g., 'http://localhost:5000/api' or your production URL
 });
 
 apiClient.interceptors.request.use(

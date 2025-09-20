@@ -1,31 +1,28 @@
+// frontend/src/components/common/Button.js
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { twMerge } from 'tailwind-merge';
+import { clsx } from 'clsx';
 
-const Button = ({ children, onPress, className, textClassName, loading, disabled, ...props }) => {
+const Button = ({ title, onPress, className, textClassName }) => {
   const buttonClasses = twMerge(
-    'py-3 px-4 bg-blue-600 rounded-lg flex-row justify-center items-center my-2',
-    disabled && 'bg-gray-400',
-    className,
+    'bg-blue-500',
+    'py-2',
+    'px-4',
+    'rounded',
+    className
   );
 
   const textClasses = twMerge(
-    'text-white text-center font-bold text-base',
-    textClassName,
+    'text-white',
+    'font-bold',
+    'text-center',
+    textClassName
   );
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={disabled || loading}
-      className={buttonClasses}
-      {...props}
-    >
-      {loading ? (
-        <ActivityIndicator color="white" />
-      ) : (
-        <Text className={textClasses}>{children}</Text>
-      )}
+    <TouchableOpacity onPress={onPress} className={buttonClasses}>
+      <Text className={textClasses}>{title}</Text>
     </TouchableOpacity>
   );
 };
